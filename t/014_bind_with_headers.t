@@ -1,4 +1,4 @@
-use Test::More tests => 17;
+use Test::More tests => 18;
 use strict;
 use warnings;
 
@@ -32,6 +32,13 @@ is($@, '', "exchange_declare");
 
 my $headers = { foo => 'bar' };
 eval { $mq->queue_bind( 1, $queue, $exchange, $routekey, $headers ) };
+is( $@, '', "queue_bind" );
+
+# Handle blessed scalars (internal type SvPVMG)
+my $tmp_scalar = 'baz1';
+my $blessed_scalar = bless \$tmp_scalar, 'baz';
+my $headers_pvmg = { baz => $$blessed_scalar };
+eval { $mq->queue_bind( 1, $queue, $exchange, $routekey, $headers_pvmg ) };
 is( $@, '', "queue_bind" );
 
 # This message doesn't have the correct headers so will not be routed to the queue
