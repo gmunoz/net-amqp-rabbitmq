@@ -169,6 +169,9 @@ amqp_field_value_kind_t amqp_kind_for_sv(SV** perl_value, short force_utf8) {
       }
       return AMQP_FIELD_KIND_BYTES;
 
+    case SVt_PVMG:
+      return AMQP_FIELD_KIND_BYTES;
+
     default:
       if ( SvROK( *perl_value ) ) {
         // Array Reference
